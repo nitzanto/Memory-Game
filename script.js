@@ -1,72 +1,144 @@
-$(document).ready(function() {
-    
-    var timerElement = $('#timer');
+$(document).ready(function () {
+    var timerElement = $("#timer");
     var startTime = new Date().getTime();
-
+    var score = 0;
+    var flippedCards = [];
+    var matchedCards = [];
+  
     function updateTimer() {
       var currentTime = new Date().getTime();
       var elapsedTime = currentTime - startTime;
       var seconds = Math.floor(elapsedTime / 1000);
       var minutes = Math.floor(seconds / 60);
       seconds %= 60;
-
+  
       // Format the time values
-      var formattedTime = minutes.toString().padStart(2, '0') + ':' + seconds.toString().padStart(2, '0');
-
+      var formattedTime =
+        minutes.toString().padStart(2, "0") +
+        ":" +
+        seconds.toString().padStart(2, "0");
+  
       // Update the timer element
       timerElement.text(formattedTime);
     }
-
+  
     // Call the updateTimer function every second (1000 milliseconds)
     setInterval(updateTimer, 1000);
-
-    var $cards = $('.card');
-    var openedCards = [];
   
-    // Function to handle card click event
-    function handleCardClick() {
-      
-      var $card = $(this);
+    // Retrieve the number of pairs from localStorage
+    var pairsRequested = localStorage.getItem("pairsRequested");
   
-      if ($card.hasClass('matched') || $card.hasClass('opened')) {
-        return; // Ignore clicks on already matched or opened cards
-      }
+    // Define an array of card image sources
+    var cardImages = [
+      "cards/artist.png",
+      "cards/fireworks.png",
+      "cards/dolls.png",
+      "cards/joystick.png",
+      "cards/joker.png",
+      "cards/videogame.png",
+      "cards/basketball.png",
+      "cards/bear.png",
+      "cards/cat.png"
+    ];
   
-      $card.addClass('opened');
-      openedCards.push($card);
+    // Shuffle the cardImages array
+    shuffle(cardImages);
   
-      if (openedCards.length === 2) {
-        // Two cards opened, check for a match
-        var card1 = openedCards[0].text();
-        var card2 = openedCards[1].text();
+    // Create a new array of card images based on the pairsRequested value
+    var selectedImages = cardImages.slice(0, pairsRequested);
   
-        if (card1 === card2) {
-          // Match found
-          openedCards.forEach(function(card) {
-            card.addClass('matched');
-          });
-        } else {
-          // No match, flip back the cards after a delay
-          setTimeout(function() {
-            openedCards.forEach(function(card) {
-              card.removeClass('opened');
-            });
-          }, 1000);
+    // Duplicate the selectedImages array to create pairs
+    var cardImagesPairs = selectedImages.concat(selectedImages);
+  
+    // Shuffle the cardImagesPairs array
+    shuffle(cardImagesPairs);
+  
+    // Generate the HTML for the card images
+    var cardHTML = "";
+    for (var i = 0; i < cardImagesPairs.length; i++) {
+      cardHTML += `
+        <div class="col">
+          <div class="card mb-3" data-index="${i}">
+            <div class="card-body text-center">
+              <img src="${cardImagesPairs[i]}" class="img-fluid hidden" data-index="${i}" alt="Card ${i}" />
+            </div>
+          </div>
+        </div>
+      `;
+    }
+  
+    // Append the card HTML to the card container
+    $("#cardContainer").html(cardHTML);
+  
+    // Add click event handlers to the cards
+    $(".card").on("click", function () {
+      var cardIndex = $(this).data("index");
+      if (flippedCards.length < 2 && !matchedCards.includes(cardIndex) && !flippedCards.includes(cardIndex)) {
+        flipCard($(this), cardIndex);
+        flippedCards.push(cardIndex);
+  
+        if (flippedCards.length === 2) {
+          var card1Index = flippedCards[0];
+          var card2Index = flippedCards[1];
+  
+          var card1Image = $(`.card[data-index="${card1Index}"] img`);
+          var card2Image = $(`.card[data-index="${card2Index}"] img`);
+  
+          if (cardImagesPairs[card1Index] === cardImagesPairs[card2Index]) {
+            // Matched cards
+            matchedCards.push(card1Index, card2Index);
+            score++;
+            $(".score span").text(score);
+  
+            if (matchedCards.length === cardImagesPairs.length) {
+              // All cards are matched, game over
+              alert("Congratulations! You've won the game!");
+            }
+          } else {
+            // Unflip cards after a delay
+            setTimeout(function () {
+              flipCardBack(card1Image);
+              flipCardBack(card2Image);
+            }, 1000);
+          }
+  
+          flippedCards = [];
         }
-  
-        openedCards = []; // Reset the opened cards array
       }
+    });
+  
+    // Flip a card and reveal the image
+    function flipCard(card, cardIndex) {
+      card.addClass("flipped");
+      card.find("img").removeClass("hidden");
+      card.find("img").addClass("visible");
     }
   
-    // Attach click event handler to cards
-    $cards.on('click', handleCardClick);
-  
-    // Function to handle restart button click event
-    function handleRestartButtonClick() {
-      $cards.removeClass('matched opened');
-      openedCards = [];
+    // Flip a card back and hide the image
+    function flipCardBack(cardImage) {
+      cardImage.removeClass("visible");
+      cardImage.addClass("hidden");
+      cardImage.closest(".card").removeClass("flipped");
     }
-  
-    // Attach click event handler to restart button
-    $('#restart-button').on('click', handleRestartButtonClick);
   });
+  
+  // Shuffle function
+  function shuffle(array) {
+    var currentIndex = array.length, temporaryValue, randomIndex;
+  
+    // While there remain elements to shuffle
+    while (0 !== currentIndex) {
+  
+      // Pick a remaining element
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+  
+      // Swap it with the current element
+      temporaryValue = array[currentIndex];
+      array[currentIndex] = array[randomIndex];
+      array[randomIndex] = temporaryValue;
+    }
+  
+    return array;
+  }
+  
