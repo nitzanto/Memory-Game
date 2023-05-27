@@ -60,18 +60,17 @@ $(document).ready(function () {
   var cardHTML = "";
   for (var i = 0; i < cardImagesPairs.length; i++) {
     cardHTML += `
-        <div class="col mb-3">
-        <div class="card mb-3 border border-secondary square-card" data-index="${i}">
-  <div class="card-body d-flex align-items-center justify-content-center">
-    <img src="${cardImagesPairs[i]}" class="img-fluid hidden square-image" data-index="${i}" alt="Card ${i}" />
-  </div>
-</div>
-
+      <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-3">
+        <div class="card border border-secondary square-card" data-index="${i}">
+          <div class="card-body d-flex align-items-center justify-content-center">
+            <img src="${cardImagesPairs[i]}" class="img-fluid hidden square-image" data-index="${i}" alt="Card ${i}" />
           </div>
         </div>
-      `;
+      </div>
+    `;
   }
-
+  
+  
   // Append the card HTML to the card container
   $("#cardContainer").html(cardHTML);
 
