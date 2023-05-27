@@ -7,6 +7,8 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
     />
     <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" href="logo/doge.png" type="image/png">
+
     <title>Memory Game</title>
 
     <style>
@@ -25,17 +27,19 @@
     <div class="head container border border-secondary mx-auto mt-5 py-3">
 
       <h2 class="text-center mb-4">Memory Game</h2>
+      <img class="mx-auto d-flex mb-4" src="logo/doge.png" />
       <div class="d-flex flex-col mx-auto">
       <div class="col text-center mr-2" id="usernameDisplay"></div>
       <div class="col score text-center">Score: <span>0</span></div>
-      <div class="col text-center mr-2">Timer  <span id="timer"></span></div>
+      <div class="col text-center " id="TimerClass">Timer  <span id="timer"></span></div>
     </div>
+    <div class="mx-auto d-flex" id="postGameBtn"></div>
     </div>
     </div>
 
-    <div class="container mt-3 border border-secondaryy">
-        <div id="cardContainer" class="row row-cols-1 row-cols-sm-2 row-cols-md-3"></div>
-      </div>
+    <div class="container mt-3 border border-secondary">
+      <div id="cardContainer" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4"></div>
+    </div>
       
     <!-- Add the JavaScript files for jQuery and Bootstrap via CDN -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -45,6 +49,5 @@
     <script>
         document.getElementById("usernameDisplay").textContent = localStorage.getItem("usernameRequested");
       </script>
-      <script src="gamelogic.js"></script>
   </body>
 </html>

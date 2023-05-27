@@ -1,3 +1,7 @@
+*{
+  font-family: monospace
+}
+
 .card {
     cursor: pointer;
     perspective: 1000px;
@@ -16,8 +20,13 @@
   .visible {
     display: block;
   }
-  
-  .bg-gray {
-    background-color: black;
+
+  .square-card {
+    width: 96px;
+    height: 96px;
   }
   
+  .square-image {
+    max-width: 100%;
+    max-height: 100%;
+  }
